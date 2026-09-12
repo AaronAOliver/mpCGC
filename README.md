@@ -93,37 +93,6 @@ Use this mode when you already have an annotation you want to keep. If you have
 the nucleotide assembly, `prok` is simpler, since the gene calls then come from
 the same Pyrodigal version as everything else.
 
-### How many genomes you need
-
-The samplesheet takes anything from one row to tens of thousands. The number
-matters most for the diversity step.
-
-| Genomes per lineage | What you get |
-|---|---|
-| 1 | Identification works fully. Mining works, but each network comes from one genome. Fingerprints and clustering work. No rarefaction. |
-| 2–4 | Same. Diversity still skipped. |
-| 5 or more | Rarefaction, extrapolation and Chao2 asymptotes for that lineage. |
-| Hundreds | The range the estimates are designed for. |
-
-Rarefaction treats genomes as sampling units and distinct CGC fingerprints as
-species, then measures how richness accumulates as genomes are added. One genome
-gives one sampling unit and no curve, so the step skips that lineage and says so:
-
-```
-[richness] skipping Bacteroidota (1 genomes < --min-genomes)
-```
-
-The cutoff is `--min_genomes` (default 5). Five is a minimum, not a target. Chao2
-depends on how many fingerprints appear in exactly one and exactly two genomes,
-so a handful of genomes produces a very wide confidence interval. Lineages come
-from `--group_by` (default `phylum`), so the count is per lineage, not overall.
-
-For a single genome, skip the diversity work:
-
-```bash
-nextflow run . --input one_genome.csv --db refs/db/dbcan_db --step identify
-```
-
 ### Taxonomy
 
 Taxonomy can come from the samplesheet or a separate file. Either way it does two
