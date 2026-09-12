@@ -1,0 +1,57 @@
+========================================================================
+mpCGC catalog comparison  [GCA_000151205.2_ASM15120v2_genomic]
+========================================================================
+                                              run      reference
+clusters                                       16             16
+gene rows                                     170            163
+  CAZyme                                       29             24
+  TC                                           41             41
+  STP                                          16             14
+  null                                         84             84
+
+------------------------------------------------------------------------
+GENE-LEVEL AGREEMENT (matched on contig + coordinates)
+------------------------------------------------------------------------
+genes in both            : 163  (100.0% of reference)
+only in run              : 7
+only in reference        : 0
+  only in run           : 2 signature, 5 null
+
+of the 163 shared genes:
+  identical Gene Type          : 157  (96.3%)
+  identical enzyme families    : 157  (96.3%)
+  byte-identical annotation    : 154  (94.5%)
+
+Gene Type differences (reference -> run):
+          null -> CAZyme       3
+          null -> STP          2
+            TC -> CAZyme       1
+
+enzyme-family differences: 6
+  CP002952.1:1050156-1052165   reference GH13_20 | run CBM48,GH13_20
+  CP002952.1:1442415-1443596   reference - | run GT4
+  CP002952.1:1443740-1444795   reference - | run GT2
+  CP002952.1:1444770-1445915   reference - | run GT4
+  CP002952.1:1445912-1446805   reference - | run GT2
+  CP002952.1:2028323-2030239   reference GH13_20 | run CBM34,GH13_20
+
+------------------------------------------------------------------------
+CLUSTER-LEVEL AGREEMENT
+------------------------------------------------------------------------
+reference clusters              : 16
+  gene sets identical           : 14  (87.5%)
+  mean Jaccard with best match  : 0.930
+  median Jaccard                : 1.000
+  >=0.90 overlap                : 13  (81.2%)
+  >=0.50 overlap                : 15  (93.8%)
+  reference clusters split across several run clusters:
+    into 2 run clusters          : 1
+
+------------------------------------------------------------------------
+ENZYME FAMILY INVENTORY
+------------------------------------------------------------------------
+families in run                 : 22
+families in reference           : 18
+families in both                : 18  (100.0% of reference)
+only in run                     : CBM20, CBM34, CBM48, CE1
+identical gene counts           : 16 of 18 shared families

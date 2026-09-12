@@ -1,0 +1,68 @@
+========================================================================
+mpCGC catalog comparison  [GCA_000325705.1_ASM32570v1_genomic]
+========================================================================
+                                              run      reference
+clusters                                       94             82
+gene rows                                   1,039            915
+  CAZyme                                      244            217
+  TC                                          215            185
+  TF                                            9              0
+  STP                                          84             72
+  Sulfatase                                    28             24
+  Peptidase                                    23             20
+  prodoric                                      0              9
+  null                                        436            388
+
+------------------------------------------------------------------------
+GENE-LEVEL AGREEMENT (matched on contig + coordinates)
+------------------------------------------------------------------------
+genes in both            : 915  (100.0% of reference)
+only in run              : 124
+only in reference        : 0
+  only in run           : 62 signature, 62 null
+
+of the 915 shared genes:
+  identical Gene Type          : 890  (97.3%)
+  identical enzyme families    : 894  (97.7%)
+  byte-identical annotation    : 867  (94.8%)
+
+Gene Type differences (reference -> run):
+          null -> CAZyme       11
+      prodoric -> TF           8
+          null -> STP          3
+           STP -> CAZyme       2
+      prodoric -> STP          1
+
+enzyme-family differences: 21
+  CP003346.1:1335313-1337547   reference - | run AA2
+  CP003346.1:1964625-1965722   reference - | run GH109
+  CP003346.1:2870024-2871157   reference - | run GT1
+  CP003346.1:3083084-3083992   reference - | run GT2
+  CP003346.1:3156654-3158792   reference GH10 | run CBM4,GH10
+  CP003346.1:3162190-3163545   reference GH43_2,S1_7 | run CBM6,GH43_2,S1_7
+  CP003346.1:3169533-3171434   reference CE1 | run CBM48,CE1
+  CP003346.1:3199363-3201624   reference - | run AA2
+  CP003346.1:3256951-3257685   reference - | run GT2
+  CP003346.1:3266408-3267988   reference GH43_8 | run CBM91,GH43_8
+
+------------------------------------------------------------------------
+CLUSTER-LEVEL AGREEMENT
+------------------------------------------------------------------------
+reference clusters              : 82
+  gene sets identical           : 74  (90.2%)
+  mean Jaccard with best match  : 0.975
+  median Jaccard                : 1.000
+  >=0.90 overlap                : 76  (92.7%)
+  >=0.50 overlap                : 81  (98.8%)
+  reference clusters split across several run clusters:
+    into 2 run clusters          : 5
+
+------------------------------------------------------------------------
+ENZYME FAMILY INVENTORY
+------------------------------------------------------------------------
+families in run                 : 147
+families in reference           : 137
+families in both                : 136  (99.3% of reference)
+only in reference               : GT94
+only in run                     : AA1, AA2, CBM4, CBM48, CBM50, GH16, GH177, GH179, GH93, GT1, S1_21
+identical gene counts           : 127 of 136 shared families

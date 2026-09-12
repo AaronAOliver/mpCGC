@@ -1,0 +1,32 @@
+# Nextflow
+.nextflow/
+.nextflow.log*
+work/
+results/
+*.html.tmp
+timeline*.html
+report*.html
+trace*.txt
+dag*.svg
+dag*.html
+
+# Databases and test data (large, downloaded)
+db/
+dbcan_db/
+testdata/
+*.dmnd
+*.hmm
+*.fna
+*.faa
+*.gz
+
+# ...but the small reference catalog used by the validation test is tracked
+!test/reference/*.tsv.gz
+
+# Python / editors
+__pycache__/
+*.pyc
+.venv/
+.idea/
+.vscode/
+.DS_Store

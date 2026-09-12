@@ -1,0 +1,9 @@
+name: mpcgc-pydata
+channels: [conda-forge, defaults]
+dependencies:
+  - python=3.12
+  - numpy>=1.26
+  - scipy>=1.11
+  - pandas>=2.1
+  - matplotlib-base>=3.8
+  - seaborn>=0.13

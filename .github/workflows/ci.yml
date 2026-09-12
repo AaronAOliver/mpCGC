@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint Nextflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install Nextflow
+        run: |
+          curl -fsSL -o nextflow \
+            https://github.com/nextflow-io/nextflow/releases/latest/download/nextflow
+          chmod +x nextflow
+          sudo mv nextflow /usr/local/bin/
+          nextflow -v
+      - name: Lint scripts and configs
+        run: nextflow lint .
+
+  estimators:
+    name: Diversity estimators vs iNEXT
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy scipy
+      # expected values come from iNEXT 3.0.2 in R and are stored in the test,
+      # so this needs no R installation
+      - run: python test/test_inext.py
+
+  scripts:
+    name: Compile bin scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy scipy pandas
+      - name: Byte-compile
+        run: python -m compileall -q bin test
+      - name: Every script answers --help
+        run: |
+          for f in bin/mpcgc_*.py; do
+            echo "--- $f"
+            python "$f" --help > /dev/null
+          done

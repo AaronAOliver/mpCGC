@@ -1,0 +1,11 @@
+# Only what bin/mpcgc_tree_figure.R loads, plus svglite. r-base is left unpinned
+# so the solver can match the R build bioconda's ggtree was compiled against.
+# svglite is optional: without it the script writes PNG and, where cairo is
+# available, SVG through the cairo device.
+name: mpcgc-rggtree
+channels: [conda-forge, bioconda]
+dependencies:
+  - r-base
+  - bioconductor-ggtree
+  - r-ggplot2
+  - r-svglite

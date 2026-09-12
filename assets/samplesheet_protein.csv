@@ -1,0 +1,3 @@
+# for --mode protein: proteins in 'fasta', matching gene coordinates in 'gff'
+sample,fasta,gff,taxonomy
+MAG_001,/path/to/MAG_001.faa,/path/to/MAG_001.gff,d__Bacteria;p__Bacteroidota

@@ -1,0 +1,5 @@
+name: mpcgc-phylo
+channels: [conda-forge, bioconda, defaults]
+dependencies:
+  - muscle=5.1
+  - fasttree=2.1.11

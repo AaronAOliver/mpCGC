@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use mpCGC, please cite the manuscript below."
+title: "mpCGC: marine polysaccharide CAZyme gene clusterer"
+abstract: >-
+  A Nextflow pipeline that identifies, mines and summarises carbohydrate-active
+  enzyme gene clusters (CGCs) in marine microbial genomes and metagenome-assembled
+  genomes. mpCGC is the pipeline used to build mpCGCdb (https://mpcgcdb.com).
+authors:
+  - family-names: Oliver
+    given-names: Aaron A.
+repository-code: "https://github.com/AaronAOliver/mpCGC"
+url: "https://mpcgcdb.com"
+license: MIT
+keywords:
+  - CAZyme
+  - polysaccharide utilisation locus
+  - marine microbiome
+  - metagenome-assembled genome
+  - Nextflow

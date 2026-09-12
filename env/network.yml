@@ -1,0 +1,7 @@
+name: mpcgc-network
+channels: [conda-forge, defaults]
+dependencies:
+  - python=3.12
+  - python-igraph>=0.11
+  - leidenalg>=0.10
+  - numpy>=1.26
