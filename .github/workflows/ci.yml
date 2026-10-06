@@ -11,8 +11,8 @@ jobs:
     name: Lint Nextflow
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
@@ -34,7 +34,7 @@ jobs:
       matrix:
         env: [dbcan, pydata, network, phylo, rggtree]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
@@ -48,8 +48,8 @@ jobs:
     name: Workflow stub run
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
@@ -70,8 +70,8 @@ jobs:
     name: Diversity estimators vs iNEXT
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: pip install numpy scipy
@@ -83,20 +83,20 @@ jobs:
     name: Compile bin scripts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: pip install numpy scipy pandas
       - name: Byte-compile
         run: python -m compileall -q bin test
       # Nextflow runs bin/ scripts directly, so they must be committed as
-      # executable (git on Windows does not record the bit by itself)
+      # executable (git on Windows does not record the bit by itself). Only
+      # tracked files are checked: the byte-compile step above leaves an
+      # untracked bin/__pycache__/ behind.
       - name: Scripts are executable
         run: |
-          for f in bin/*; do
-            git ls-files -s "$f" | grep -q '^100755' || { echo "not executable in git: $f"; exit 1; }
-          done
+          git ls-files -s bin | awk '$1 != "100755" { print "not executable in git: " $4; bad = 1 } END { exit bad }'
       - name: Every script answers --help
         run: |
           for f in bin/mpcgc_*.py; do
