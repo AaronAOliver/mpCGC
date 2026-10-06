@@ -5,14 +5,14 @@ process CGC_PROTEINS {
     tag   'per-family protein fasta'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/pandas:2.2.1'
 
     input:
     path catalog
     path faas, stageAs: 'faa/*'
 
     output:
-    path 'families/*.faa', emit: families
+    // optional: a run with no CGCs has no families, which is a result, not an error
+    path 'families/*.faa', emit: families, optional: true
     path 'family_counts.tsv', emit: counts
     path 'protein_map.tsv'  , emit: protein_map
     path 'versions.yml'   , emit: versions
@@ -32,5 +32,13 @@ process CGC_PROTEINS {
     "${task.process}":
         python: \$(python3 --version | sed 's/Python //')
     END_VERSIONS
+    """
+
+    stub:
+    """
+    mkdir -p families
+    for i in 1 2 3 4; do printf ">p\$i\nMKV\n" >> families/GH16.faa; done
+    touch family_counts.tsv protein_map.tsv
+    echo '"${task.process}": {}' > versions.yml
     """
 }

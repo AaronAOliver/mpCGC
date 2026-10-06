@@ -55,14 +55,14 @@ workflow MINE {
     LEIDEN_COMMUNITIES(DIAMOND_ALLVSALL.out.hits)
     ch_versions = ch_versions.mix(LEIDEN_COMMUNITIES.out.versions.first())
 
-    if (params.make_trees) {
+    if (params.make_trees.toString().toBoolean()) {
         MUSCLE_ALIGN(families)
         ch_versions = ch_versions.mix(MUSCLE_ALIGN.out.versions.first())
 
         FASTTREE(MUSCLE_ALIGN.out.alignment)
         ch_versions = ch_versions.mix(FASTTREE.out.versions.first())
 
-        if (params.make_tree_figures) {
+        if (params.make_tree_figures.toString().toBoolean()) {
             GGTREE_FIGURE(
                 FASTTREE.out.tree.join(LEIDEN_COMMUNITIES.out.communities),
                 protein_map_v,
@@ -75,6 +75,6 @@ workflow MINE {
     emit:
     coloc       = COLOC_NETWORK.out.network
     communities = LEIDEN_COMMUNITIES.out.communities
-    trees       = params.make_trees ? FASTTREE.out.tree : channel.empty()
+    trees       = params.make_trees.toString().toBoolean() ? FASTTREE.out.tree : channel.empty()
     versions    = ch_versions
 }

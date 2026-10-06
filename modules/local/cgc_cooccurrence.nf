@@ -10,7 +10,6 @@ process CGC_COOCCURRENCE {
     tag   'colocalisation matrix'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/scikit-learn:1.4.2'
 
     input:
     path fingerprints
@@ -34,5 +33,11 @@ process CGC_COOCCURRENCE {
     "${task.process}":
         scipy: \$(python3 -c "import scipy; print(scipy.__version__)")
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch cooccurrence_matrix.tsv cooccurrence_order.txt
+    echo '"${task.process}": {}' > versions.yml
     """
 }

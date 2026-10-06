@@ -30,10 +30,7 @@ This calls dbCAN's own downloader, which fetches, in one step:
 | STP | `STP.hmm` (~11 MB) | signal-transduction proteins |
 | dbCAN-PUL | `dbCAN-PUL/` | reference polysaccharide utilisation loci |
 
-Budget ~8 GB of disk. The result is a single directory to pass as `--db`. Add
-`--db_from_s3` to pull the pinned S3 release rather than the moving `db_current`
-snapshot — worth doing if you need a run to be reproducible months later.
-
+Uses ~8 GB of disk. The result is a single directory to pass as `--db`.
 Databases only need downloading once; point every later run at the same `--db`.
 
 ## Input
@@ -52,10 +49,6 @@ MAG_002,/data/MAG_002.fna.gz,d__Bacteria;p__Verrucomicrobiota
 - `taxonomy` — optional GTDB string. Used only to assign genomes to lineages for
   the diversity estimates; genomes without one fall into `other`.
 
-For a larger cohort, pass `--metadata` with a TSV carrying a `Bin_id` column and
-a column whose name contains `taxonomy`; extra columns such as completeness are
-carried through. The samplesheet is still required.
-
 ## Running
 
 ```bash
@@ -66,9 +59,6 @@ nextflow run AaronAOliver/mpCGC \
     -profile conda \
     -resume
 ```
-
-Always keep `-resume` in your command: an interrupted run restarts from the last
-completed process rather than re-annotating everything.
 
 ### One dataflow at a time
 
@@ -126,7 +116,7 @@ subfamilies.
 | `--e_value_peptidase` / `--coverage_peptidase` | `1e-4` / `35` | MEROPS search |
 | `--e_value_stp` / `--coverage_stp` | `1e-4` / `0.35` | STP HMMs |
 
-### CGC calling
+### CGC calling (dbCAN)
 
 | Parameter | Default | Meaning |
 |---|---|---|
@@ -141,8 +131,7 @@ subfamilies.
 | `--use_distance` | `false` | also require signature genes within `--base_pair_distance` |
 
 The default requires a transporter in every cluster, which is the classic
-polysaccharide-utilisation-locus definition and the setting that best reproduces
-mpCGCdb. To also keep clusters built from CAZymes alone, add `CAZyme` to the list
+polysaccharide-utilisation-locus definition. To also keep clusters built from CAZymes alone, add `CAZyme` to the list
 and switch to `any` logic:
 
 ```bash
@@ -152,7 +141,7 @@ and switch to `any` logic:
 A cluster then qualifies on its CAZyme core alone, so a pair of adjacent
 glycoside hydrolases with no transporter is still a CGC. This finds more loci but
 widens the boundaries of some existing ones, so the two settings are not directly
-comparable — see the sweep in `docs/validation.md`.
+comparable.
 
 ### Mining
 
@@ -184,26 +173,3 @@ pipeline. Start with `--mine_families` on the families you care about.
 Diversity estimates need a reasonable number of genomes per lineage; lineages
 with fewer than five are skipped rather than reported with a meaningless
 asymptote.
-
-## Troubleshooting
-
-**`Process requirement exceeds available memory`** — lower `--max_memory` to just
-under what the machine has. `resourceLimits` then caps every request.
-
-**`conda: command not found`** — Nextflow needs `conda` on `PATH` to build
-environments. Either put it there, or use `-profile local_envs` with
-`--local_env_dbcan`, `--local_env_pydata`, `--local_env_network` and
-`--local_env_phylo` pointing at environments you have already created.
-
-**A family fails in `LEIDEN_COMMUNITIES`** — families whose all-vs-all search
-produced no edge above `--ssn_evalue` are written out as singletons rather than
-failing. If a run does fail there, check that `python-igraph` and `leidenalg` are
-present in the `network` environment.
-
-**Empty `diamond.out.peptidase`** — normal for genomes with no MEROPS hits above
-the threshold; the file is created regardless.
-
-**Tree figures appear as PNG but not SVG** — ggplot2 4 needs the `svglite` package
-to write SVG. The conda environment installs it; the stock ggtree container does
-not carry it, so the pipeline falls back to the cairo device and, failing that,
-keeps the PNG and logs `SVG not written`. Nothing fails over a missing SVG.

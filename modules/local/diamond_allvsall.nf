@@ -5,7 +5,6 @@ process DIAMOND_ALLVSALL {
     tag   "${meta.id}"
 
     conda     "${moduleDir}/../../env/dbcan.yml"
-    container 'quay.io/biocontainers/diamond:2.1.9--hdcc8f71_0'
 
     input:
     tuple val(meta), path(faa)
@@ -33,5 +32,11 @@ process DIAMOND_ALLVSALL {
     "${task.process}":
         diamond: \$(diamond --version 2>&1 | sed 's/^diamond version //')
     END_VERSIONS
+    """
+
+    stub:
+    """
+    echo -n | gzip > ${meta.id}.ssn.tsv.gz
+    echo '"${task.process}": {}' > versions.yml
     """
 }

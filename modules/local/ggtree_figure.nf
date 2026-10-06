@@ -12,7 +12,6 @@ process GGTREE_FIGURE {
     tag   "${meta.id}"
 
     conda     "${moduleDir}/../../env/rggtree.yml"
-    container 'quay.io/biocontainers/bioconductor-ggtree:3.12.0--r43hdfd78af_0'
 
     input:
     tuple val(meta), path(nwk), path(communities)
@@ -43,5 +42,11 @@ process GGTREE_FIGURE {
         R: \$(Rscript -e 'cat(strsplit(R.version.string," ")[[1]][3])')
         ggtree: \$(Rscript -e 'cat(as.character(packageVersion("ggtree")))')
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.tree.png
+    echo '"${task.process}": {}' > versions.yml
     """
 }

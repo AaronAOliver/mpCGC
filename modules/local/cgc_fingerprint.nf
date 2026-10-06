@@ -11,7 +11,6 @@ process CGC_FINGERPRINT {
     tag   'cluster encoding'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/pandas:2.2.1'
 
     input:
     path catalog
@@ -23,7 +22,7 @@ process CGC_FINGERPRINT {
     path 'versions.yml'              , emit: versions
 
     script:
-    def collapse = params.collapse_subsets ? "--collapse --ambiguous ${params.ambiguous_subset}" : ''
+    def collapse = params.collapse_subsets.toString().toBoolean() ? "--collapse --ambiguous ${params.ambiguous_subset}" : ''
     """
     mpcgc_fingerprint.py \
         --catalog ${catalog} \
@@ -37,5 +36,11 @@ process CGC_FINGERPRINT {
     "${task.process}":
         python: \$(python3 --version | sed 's/Python //')
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch cgc_fingerprints.tsv fingerprint_collapse.tsv
+    echo '"${task.process}": {}' > versions.yml
     """
 }

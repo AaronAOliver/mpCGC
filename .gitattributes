@@ -1,0 +1,6 @@
+# Keep Linux line endings in the repository, whatever the committer's OS,
+# so scripts in bin/ always run (a CRLF shebang breaks them).
+* text=auto eol=lf
+*.png binary
+*.gz binary
+*.npy binary

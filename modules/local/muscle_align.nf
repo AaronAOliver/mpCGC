@@ -12,7 +12,6 @@ process MUSCLE_ALIGN {
     tag   "${meta.id}"
 
     conda     "${moduleDir}/../../env/phylo.yml"
-    container 'quay.io/biocontainers/muscle:5.1--h9f5acd7_1'
 
     input:
     tuple val(meta), path(faa)
@@ -38,5 +37,11 @@ process MUSCLE_ALIGN {
         muscle: \$(muscle -version 2>&1 | sed 's/^muscle //' | cut -d' ' -f1)
         n_sequences: \${n_seqs}
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.aln.faa
+    echo '"${task.process}": {}' > versions.yml
     """
 }

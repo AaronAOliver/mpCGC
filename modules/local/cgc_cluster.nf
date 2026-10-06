@@ -9,7 +9,6 @@ process CGC_CLUSTER {
     tag   'hierarchical clustering'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/scikit-learn:1.4.2'
 
     input:
     path fingerprints
@@ -32,5 +31,11 @@ process CGC_CLUSTER {
     "${task.process}":
         scipy: \$(python3 -c "import scipy; print(scipy.__version__)")
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch cgc_linkage.npy cgc_clusters.tsv
+    echo '"${task.process}": {}' > versions.yml
     """
 }

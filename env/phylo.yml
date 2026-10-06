@@ -1,5 +1,8 @@
+# Multiple sequence alignment and phylogenetic trees.
 name: mpcgc-phylo
-channels: [conda-forge, bioconda, defaults]
+channels:
+  - conda-forge
+  - bioconda
 dependencies:
   - muscle=5.1
   - fasttree=2.1.11

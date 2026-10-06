@@ -11,7 +11,6 @@ process CGC_RICHNESS {
     tag   'CGC diversity'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/scipy:1.13.0'
 
     input:
     path fingerprints
@@ -23,7 +22,7 @@ process CGC_RICHNESS {
     path 'versions.yml'              , emit: versions
 
     script:
-    def ci = params.rarefaction_ci ? "--ci --nboot ${params.rarefaction_nboot}" : ''
+    def ci = params.rarefaction_ci.toString().toBoolean() ? "--ci --nboot ${params.rarefaction_nboot}" : ''
     """
     mpcgc_richness.py \
         --fingerprints ${fingerprints} \
@@ -40,5 +39,11 @@ process CGC_RICHNESS {
         scipy: \$(python3 -c "import scipy; print(scipy.__version__)")
         numpy: \$(python3 -c "import numpy; print(numpy.__version__)")
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch rarefaction_curves.tsv richness_asymptotes.tsv
+    echo '"${task.process}": {}' > versions.yml
     """
 }

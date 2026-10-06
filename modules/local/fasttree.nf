@@ -5,7 +5,6 @@ process FASTTREE {
     tag   "${meta.id}"
 
     conda     "${moduleDir}/../../env/phylo.yml"
-    container 'quay.io/biocontainers/fasttree:2.1.11--h031d066_3'
 
     input:
     tuple val(meta), path(aln)
@@ -26,5 +25,11 @@ process FASTTREE {
     "${task.process}":
         fasttree: \$(${ft} -help 2>&1 | head -1 | sed 's/^FastTree //' | cut -d' ' -f1)
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.nwk ${meta.id}.fasttree.log
+    echo '"${task.process}": {}' > versions.yml
     """
 }

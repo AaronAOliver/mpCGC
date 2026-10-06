@@ -1,10 +1,10 @@
+# dbCAN and everything it calls (Pyrodigal, DIAMOND, PyHMMER). Only dbCAN is
+# pinned: it declares the versions of its own dependencies, and pinning them by
+# hand as well is what stopped this file from solving as packages moved on.
+# The versions actually used are recorded in pipeline_info/ for every run.
 name: mpcgc-dbcan
-channels: [conda-forge, bioconda, defaults]
+channels:
+  - conda-forge
+  - bioconda
 dependencies:
-  - python=3.13
   - dbcan=5.2.9
-  - pyrodigal=3.7.1
-  - pyhmmer=0.12.0
-  - diamond=2.1.9
-  - pandas
-  - numpy

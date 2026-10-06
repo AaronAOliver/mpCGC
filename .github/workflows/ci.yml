@@ -26,6 +26,46 @@ jobs:
       - name: Lint scripts and configs
         run: nextflow lint .
 
+  envs:
+    name: Conda environments solve
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        env: [dbcan, pydata, network, phylo, rggtree]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          auto-activate-base: true
+          activate-environment: ""
+      - name: Solve env/${{ matrix.env }}.yml (dry run)
+        shell: bash -el {0}
+        run: conda env create --dry-run --file env/${{ matrix.env }}.yml -p "$RUNNER_TEMP/${{ matrix.env }}"
+
+  stub:
+    name: Workflow stub run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install Nextflow
+        run: |
+          curl -fsSL -o nextflow \
+            https://github.com/nextflow-io/nextflow/releases/latest/download/nextflow
+          chmod +x nextflow
+          sudo mv nextflow /usr/local/bin/
+      # stubs stand in for every tool, so no software profile or database is
+      # needed; this checks that the three dataflows wire together
+      - name: Stub run, all dataflows
+        run: |
+          mkdir -p empty_db
+          nextflow run . -profile test_full -stub-run --db empty_db --outdir stub_results
+
   estimators:
     name: Diversity estimators vs iNEXT
     runs-on: ubuntu-latest
@@ -50,6 +90,13 @@ jobs:
       - run: pip install numpy scipy pandas
       - name: Byte-compile
         run: python -m compileall -q bin test
+      # Nextflow runs bin/ scripts directly, so they must be committed as
+      # executable (git on Windows does not record the bit by itself)
+      - name: Scripts are executable
+        run: |
+          for f in bin/*; do
+            git ls-files -s "$f" | grep -q '^100755' || { echo "not executable in git: $f"; exit 1; }
+          done
       - name: Every script answers --help
         run: |
           for f in bin/mpcgc_*.py; do

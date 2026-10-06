@@ -5,7 +5,6 @@ process SUMMARY_METRICS {
     tag   'summary metrics'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/pandas:2.2.1'
 
     input:
     path catalog
@@ -30,5 +29,11 @@ process SUMMARY_METRICS {
     "${task.process}":
         python: \$(python3 --version | sed 's/Python //')
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch mpcgc_summary.csv mpcgc_summary_lineage.csv
+    echo '"${task.process}": {}' > versions.yml
     """
 }

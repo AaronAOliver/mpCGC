@@ -64,8 +64,7 @@ results/
 
 ### `catalog/all_cgc_catalog.tsv`
 
-One row per gene inside a CGC. This is the table every later step reads, and it
-matches the schema published on mpcgcdb.com.
+One row per gene inside a CGC.
 
 | Column | Notes |
 |---|---|
@@ -81,9 +80,7 @@ the files inside `<sample>/`. They exist because every genome's dbCAN run writes
 `uniInput.faa`, and collecting many genomes into one process needs distinct
 filenames.
 
-`null` rows are the unannotated genes that fall inside a cluster. They are part of
-the locus and are deliberately kept: a CGC is a stretch of DNA, not just the
-genes that happened to match a database.
+`null` rows are the unannotated genes that fall inside a cluster.
 
 `Gene Type` is one label per gene even when a gene matches several databases; the
 full set of matches stays in `Gene Annotation`.
@@ -95,7 +92,7 @@ full set of matches stays in `Gene Annotation`.
 | `CGC`, `MAG`, `lineage` | |
 | `n_tokens` | families in the fingerprint |
 | `fingerprint` | the CGC's own sorted token set |
-| `counted_as` | the maximal superset it is counted as; equals `fingerprint` when the CGC is itself maximal |
+| `counted_as` | the maximal superset it is categorized as |
 
 Count distinct functions with `counted_as`, not `fingerprint`. With
 `--collapse_subsets false` the two columns are always identical.

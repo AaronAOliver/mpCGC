@@ -21,11 +21,18 @@ encodes clusters and produces diversity statistics. Each can run on its own with
 
 ## Quick start
 
+You need [Nextflow](https://www.nextflow.io/docs/latest/install.html) (24.04 or
+newer, which needs Java 17+) and one of conda, Docker, Singularity or Apptainer.
+Nextflow installs every other tool itself.
+
 ```bash
-# fetch the reference databases (~8 GB, one time)
+# 1. fetch the reference databases (~8 GB, one time)
 nextflow run AaronAOliver/mpCGC --step download_db --outdir refs -profile conda
 
-# run the pipeline
+# 2. check the install on one genome downloaded from NCBI
+nextflow run AaronAOliver/mpCGC -profile test,conda --db refs/db/dbcan_db
+
+# 3. run your own genomes
 nextflow run AaronAOliver/mpCGC \
     --input samplesheet.csv \
     --db refs/db/dbcan_db \
@@ -33,6 +40,9 @@ nextflow run AaronAOliver/mpCGC \
     -profile conda \
     -resume
 ```
+
+Swap `-profile conda` for `-profile docker`, `-profile singularity` or
+`-profile apptainer` to run in containers instead (see [Profiles](#profiles)).
 
 ## Input files
 
@@ -88,6 +98,17 @@ For the pair to work:
   annotations.
 - Both files must describe the same genes. Proteins missing from the GFF are
   dropped from clustering.
+
+### Long sequence IDs
+
+dbCAN silently cuts protein IDs longer than 80 characters, and in nucleotide mode
+its protein IDs are built from contig names. When the IDs no longer match the
+gene coordinates, every gene is left unannotated and the genome yields no CGCs,
+with no error. mpCGC prevents this: if a genome's protein IDs (protein mode) or
+contig names (nucleotide mode) are too long, it gives dbCAN short placeholder
+IDs, logs a warning, and puts the original IDs back in every output file. The
+placeholder table is saved as `identify/<sample>.renamed_ids.tsv`. Genomes with
+shorter IDs are passed to dbCAN unchanged.
 
 Use this mode when you already have an annotation you want to keep. If you have
 the nucleotide assembly, `prok` is simpler, since the gene calls then come from
@@ -179,12 +200,16 @@ results/
 
 | Profile | Use |
 |---|---|
-| `conda` / `mamba` | per-process conda environments from `env/*.yml` |
-| `docker` / `singularity` | containers; build with `docker build -t mpcgc:1.0.0 .` and select with `--container` |
-| `slurm` | submit to a Slurm cluster |
-| `local_envs` | reuse conda environments already on the host |
+| `conda` | conda builds one environment per tool set from `env/*.yml`, cached in `~/.mpcgc/conda` |
+| `mamba` | the same, using mamba if it is installed |
+| `docker` | containers built on demand from `env/*.yml` by [Wave](https://seqera.io/wave/); nothing to build by hand |
+| `singularity` / `apptainer` | the same for HPC systems without Docker |
+| `slurm` | submit jobs to a Slurm cluster; combine with a software profile, e.g. `-profile slurm,singularity` |
 | `test` | one genome, identification only |
 | `test_full` | two genomes, all three dataflows |
+
+The container profiles need internet access the first time each image is built;
+Wave then caches it.
 
 ## Key parameters
 
@@ -222,7 +247,10 @@ every parameter.
 ## Requirements
 
 - Nextflow 24.04 or newer, and Java 17+
-- conda/mamba, Docker or Singularity
+- conda, mamba, Docker, Singularity or Apptainer
 - ~8 GB disk for the reference databases
-- ~32 GB RAM for the dbCAN-sub HMM step. Lower it with `--dbcansub false`, at the
-  cost of subfamily resolution.
+- RAM: the dbCAN-sub HMM step uses up to ~32 GB. Each task's CPUs and memory are
+  capped at what the computer has (`--max_cpus`, `--max_memory`), so smaller
+  machines still run; if dbCAN-sub runs out of memory, add `--dbcansub false`, at
+  the cost of subfamily resolution. On a cluster, set `--max_cpus` and
+  `--max_memory` to the size of one node.

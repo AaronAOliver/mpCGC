@@ -1,5 +1,8 @@
+# Catalog building, cluster encoding, clustering, co-occurrence and diversity
+# estimates (bin/mpcgc_*.py).
 name: mpcgc-pydata
-channels: [conda-forge, defaults]
+channels:
+  - conda-forge
 dependencies:
   - python=3.12
   - numpy>=1.26

@@ -1,7 +1,9 @@
+# Leiden community detection on the sequence similarity networks
+# (python-igraph's built-in Leiden implementation).
 name: mpcgc-network
-channels: [conda-forge, defaults]
+channels:
+  - conda-forge
 dependencies:
   - python=3.12
   - python-igraph>=0.11
-  - leidenalg>=0.10
   - numpy>=1.26

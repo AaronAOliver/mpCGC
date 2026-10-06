@@ -37,9 +37,10 @@ workflow IDENTIFY {
         DBCAN_CGC.out.cgc_standard.map { _meta, tsv -> tsv }.collect()
     )
 
+    // proteins from DBCAN_CGC, which carry the original IDs again
     CGC_PROTEINS(
         CGC_CATALOG.out.catalog,
-        DBCAN_ANNOTATE.out.faa.map { _meta, faa -> faa }.collect()
+        DBCAN_CGC.out.faa.map { _meta, faa -> faa }.collect()
     )
 
     emit:
@@ -47,6 +48,6 @@ workflow IDENTIFY {
     summary     = CGC_CATALOG.out.per_genome
     proteins    = CGC_PROTEINS.out.families
     protein_map = CGC_PROTEINS.out.protein_map
-    faa         = DBCAN_ANNOTATE.out.faa
+    faa         = DBCAN_CGC.out.faa
     versions    = ch_versions
 }

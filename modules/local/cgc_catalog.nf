@@ -5,7 +5,6 @@ process CGC_CATALOG {
     tag   'CGC catalog'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/pandas:2.2.1'
 
     input:
     path cgc_tsvs, stageAs: 'cgc/*'
@@ -16,7 +15,7 @@ process CGC_CATALOG {
     path 'versions.yml'         , emit: versions
 
     script:
-    def ecami = params.keep_ecami ? '--keep-ecami' : ''
+    def ecami = params.keep_ecami.toString().toBoolean() ? '--keep-ecami' : ''
     """
     mpcgc_catalog.py \
         --inputs cgc/*.cgc_standard_out.tsv \
@@ -28,5 +27,11 @@ process CGC_CATALOG {
     "${task.process}":
         python: \$(python3 --version | sed 's/Python //')
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch all_cgc_catalog.tsv cgc_per_genome.tsv
+    echo '"${task.process}": {}' > versions.yml
     """
 }

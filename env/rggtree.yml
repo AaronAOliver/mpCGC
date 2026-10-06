@@ -3,7 +3,9 @@
 # svglite is optional: without it the script writes PNG and, where cairo is
 # available, SVG through the cairo device.
 name: mpcgc-rggtree
-channels: [conda-forge, bioconda]
+channels:
+  - conda-forge
+  - bioconda
 dependencies:
   - r-base
   - bioconductor-ggtree

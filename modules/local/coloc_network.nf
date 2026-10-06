@@ -5,7 +5,6 @@ process COLOC_NETWORK {
     tag   'colocalisation network'
 
     conda     "${moduleDir}/../../env/pydata.yml"
-    container 'quay.io/biocontainers/pandas:2.2.1'
 
     input:
     path catalog
@@ -27,5 +26,11 @@ process COLOC_NETWORK {
     "${task.process}":
         python: \$(python3 --version | sed 's/Python //')
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch colocalization_network.json colocalization_edges.tsv
+    echo '"${task.process}": {}' > versions.yml
     """
 }

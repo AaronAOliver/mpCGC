@@ -31,7 +31,8 @@ def helpMessage() {
       --metadata         Optional TSV of per-genome taxonomy, overriding the
                          samplesheet column (genome id + a *taxonomy* column)
       --db               dbCAN database directory (build it with --step download_db)
-                         --db_from_s3 pulls a pinned release instead of db_current
+                         download_db uses dbCAN's pinned S3 release; add
+                         --db_from_s3 false for the moving db_current snapshot
 
     Main options:
       --step             identify | mine | summarize | all | download_db  [${params.step}]
@@ -62,7 +63,10 @@ def helpMessage() {
       --group_by             Metadata column for lineages    [${params.group_by}]
       --min_genomes          Lineages below this skip rarefaction [${params.min_genomes}]
 
-    Profiles: conda, mamba, docker, singularity, slurm, local_envs, test, test_full
+    Resources (default to this machine):
+      --max_cpus  --max_memory  --max_time
+
+    Profiles: conda, mamba, docker, singularity, apptainer, slurm, test, test_full
 
     Full documentation: docs/usage.md
     """.stripIndent()
@@ -70,7 +74,7 @@ def helpMessage() {
 
 workflow {
 
-    if (params.help) { helpMessage(); return }
+    if (params.help.toString().toBoolean()) { helpMessage(); return }
 
     // ---- database-only entry point -------------------------------------
     if (params.step == 'download_db') {

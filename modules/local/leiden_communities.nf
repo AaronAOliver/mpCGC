@@ -5,7 +5,6 @@ process LEIDEN_COMMUNITIES {
     tag   "${meta.id}"
 
     conda     "${moduleDir}/../../env/network.yml"
-    container 'quay.io/biocontainers/python-igraph:0.11.5--py311h0e8b6ba_0'
 
     input:
     tuple val(meta), path(ssn)
@@ -29,5 +28,11 @@ process LEIDEN_COMMUNITIES {
     "${task.process}":
         python-igraph: \$(python3 -c "import igraph; print(igraph.__version__)")
     END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.communities.tsv ${meta.id}.network.json
+    echo '"${task.process}": {}' > versions.yml
     """
 }
